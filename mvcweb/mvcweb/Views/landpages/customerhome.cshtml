@@ -1,0 +1,589 @@
+﻿@using mvcweb.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    string pagestate  = ViewBag.situation ;
+    jobstatus resultobject = ViewBag.resultobject;
+    users driver = ViewBag.driver;
+
+    string ClientToken = ViewBag.ClientToken;
+    jobstatus objectwithamounttopay = ViewBag.objectwithamounttopay;
+    if(objectwithamounttopay !=  null)
+    {
+        objectwithamounttopay.Nonce = "";    
+    }
+    
+    var googlemapapi = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build().GetSection("mapapikey")["key"];
+}
+
+
+
+@{
+    ViewData["Title"] = "Customer Home";
+}
+@model mvcweb.Models.jobstatus;
+
+
+
+<style type="text/css">
+        .classtoinline {
+            white-space: nowrap;
+        }
+        .visibilityclas{
+            visibility: hidden;
+           
+        }
+        
+    </style>
+    
+
+@if( pagestate == "normalpage")
+{
+
+    <head>
+    <meta charset="UTF-8">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key=AIzaSyDlJZBW-azAXP0T5Sp0OoUkTA4KrPcT0RI">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js">
+    </script>
+    <script src="https://raw.githubusercontent.com/jiren/filter.js/master/src/filter.js" type="text/javascript">
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default">
+    </script>
+    <title></title>
+    </head>
+
+
+    
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <h2 style="text-align:center; ">@ViewData["Title"]</h2>
+            <div class="col-md-4">
+            </div>
+            <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 60px;">    
+                        <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:20px" >
+                            <button class="btn btn-danger btn-large" type="button" onclick='return handleChange()'  >Find a Driver</button>
+                        </div>
+            </div>
+            <div>
+            </div>
+            </div>
+        </div>
+    </div>
+                    <script>
+                    function handleChange() {
+                      $("#formofhire").removeClass("visibilityclas");
+                      }
+                      </script>
+
+    <div class="text-center visibilityclas" id="formofhire" >
+
+     <div class="col-md-12">    
+                <h2>Enter hire Detail</h2>  
+                <p class="text-primary">[ You will be charged Rs.1000 for first 10 kms and Rs.100 for each additional kilometer ]</p>
+            </div>        
+            @using (Html.BeginForm(    "postjob", "landpages", FormMethod.Post  ))     
+            {    
+                @Html.AntiForgeryToken()            
+                <div class="form-horizontal " >             
+                <hr />  
+                     @Html.HiddenFor(model => model.customerFrom , new { @id = "startingfrom" })    
+                     @Html.HiddenFor(model => model.customerTo, new { @id = "customertoId" })      
+                     @Html.HiddenFor(model => model.amountPayable,  new { @id = "amounttopay" }) 
+
+
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left;   " >
+                            @Html.LabelFor(model => model.vehicleType, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column; text-align:left ">    
+                            @Html.RadioButtonFor(model => model.vehicleType,  "twowheel", new {   @class = "form-check-input"    ,id = "civilState" ,name= "civilState" })  
+                            2 wheeler    &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.vehicleType,  "threewheel", new { @class = "form-check-input"  ,  id = "civilState" ,name= "civilState" }) 
+                            3 wheeler   &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.vehicleType,  "fourwheel", new { @class = "form-check-input"  ,  id = "civilState" ,name= "civilState" }) 
+                            4 wheeler   &nbsp; &nbsp;
+                            @Html.ValidationMessageFor(model => model.vehicleType, "", new { @class = "text-danger" })    
+                        </div>                            
+                    </div>
+
+
+
+
+
+
+                    <!-- js and html for map  -->
+                    @Html.LabelFor(model => model.customerTo, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })  
+                    <div class="container">
+                        <div id="places"></div><!-- CLOSE 6 COL -->
+                        <input class="controls" id="pac-input" placeholder="Search city here" type="text">
+                        <div class="map" id="map" style="width:100%;height:400px; margin:10px;"></div><!-- CLOSE CONTAINER -->
+                    </div>
+                    <script>
+                            var beginingplace ;
+                            $(document).ready(function() {
+                                x = navigator.geolocation;
+                                x.getCurrentPosition(success, faliure ,  {maximumAge:15000, timeout:60000, enableHighAccuracy:true}); 
+                                function success(position){
+                                       var  mylat = position.coords.latitude;
+                                       var  mylong = position.coords.longitude; 
+                                       $("#startingfrom").val(  mylat + ","+ mylong  );
+	                               beginingplace  = new google.maps.LatLng(mylat  , mylong ) ;
+	                               var places = [{
+                                    "id": 1,
+                                    "name": "Test",
+                                    "coordinate": {
+                                        "latitude": mylat ,
+                                        "longitude": mylong  
+                                    },
+                                    "description": "This is a test",
+                                    "is_active": true
+                                }]
+                                // EXECUTE FUNCTIONS:
+                                var place = places[0];
+                                GoogleMap.init(place.coordinate.latitude, place.coordinate.longitude, places);
+                                var afterFilter = function(result) {
+                                    $('#total_places').text(result.length);
+                                    GoogleMap.updateMarkers(result);
+                                }
+                                }
+                                function faliure() {  }
+                            });
+                            // BUILD FILTERS:
+                            // BUILD GOOGLE MAPS:
+                            var GoogleMap = {
+                                map: null,
+                                markers: {},
+                                init: function(lat, lng, places) {
+                                    var self = this;
+                                    var mapOptions = {
+                                        zoom: 12,
+                                        center: new google.maps.LatLng(lat, lng)
+                                    };
+                                    this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                                    this.infowindow = new google.maps.InfoWindow({
+                                        size: new google.maps.Size(50, 50)
+                                    });
+                                    // SEARCH STARTS HERE (ALONG WITH ISSUES):
+                                    var searchBox = new google.maps.places.SearchBox(document.getElementById('pac-input'));
+                                    google.maps.event.addListener(searchBox, 'places_changed', () => {
+                                        searchBox.set('map', null);
+                                        var places = searchBox.getPlaces();
+                                        var bounds = new google.maps.LatLngBounds();
+                                        var i, place;
+                                        for (i = 0; place = places[i]; i++) {
+                                          var marker = new google.maps.Marker({
+                                            position: place.geometry.location
+                                          });
+                                          marker.bindTo('map', searchBox, 'map');
+                                          google.maps.event.addListener(marker, 'map_changed', function() {
+                                            if (!this.getMap()) {
+                                              this.unbindAll();
+                                            }
+                                          });
+                                          bounds.extend(place.geometry.location);
+                                        }
+                                        this.map.fitBounds(bounds);
+                                        searchBox.set('map', map);
+                                        this.map.setZoom(Math.min(map.getZoom(), 12));
+                                    });
+                                    // END OF SEARCH HERE.
+                                    $.each(places, function() {
+                                        self.addMarker(this);
+                                    });
+                                    this.setCenterPoint();
+                                },
+                                // Create map markers
+                                addMarker: function(place) {
+                                    var self = this;
+                                    var marker = new google.maps.Marker({
+                                        position: new google.maps.LatLng(place.coordinate.latitude, place.coordinate.longitude),
+                                        map: self.map,
+                                        title: place.name,
+	                                draggable: true,
+                                        icon: place.image
+                                    });
+                                    console.log(place);
+                                    // Create information event for each marker
+                                    marker.info_window_content = 'TEST'
+                                    self.markers[place.id] = marker
+                                    google.maps.event.addListener(marker, 'dragend' , function() {
+                                        self.map.setCenter(marker.getPosition());
+	                                console.log("heehee");
+	                                console.log(marker.getPosition().lat()  );
+                            let directionsService = new google.maps.DirectionsService();
+                              let directionsRenderer = new google.maps.DirectionsRenderer();
+                              directionsRenderer.setMap(map); // Existing map object displays directions
+                              // Create route from existing points used for markers
+                            console.log("ddde");
+                            console.log(beginingplace);
+                              const route = {
+                                  origin: beginingplace    ,
+                                  destination: marker.getPosition(),
+                                  travelMode: 'DRIVING'
+                              }
+                              directionsService.route(route,
+                                function(response, status) { // anonymous function to capture directions
+                                  if (status !== 'OK') {
+                                    window.alert('Directions request failed due to ' + status);
+                                    return;
+                                  } else {
+                                    directionsRenderer.setDirections(response); // Add route to the map
+                                    var directionsData = response.routes[0].legs[0]; // Get data about the mapped route
+                                    if (!directionsData) {
+                                      window.alert('Directions request failed');
+                                      return;
+                                    }
+                                    else {
+	                              $("#customertoId").val(   marker.getPosition().lat() +","+ marker.getPosition().lng()  );
+	                             
+	                            var cost =0 ; 
+ 	                            var baseprice = 1000 ; 
+	                            console.log(directionsData.distance.value  );
+	                            console.log(directionsData.distance   );
+	                            if(  directionsData.distance.value/1000 <= 10 ){ cost = baseprice ; }
+	                            else{ cost = baseprice + 100*(directionsData.distance.value/1000  -10 ) ;   }
+	                            $("#amounttopay").val( cost );
+                                document.getElementById("priceid").innerHTML = cost ;
+                                
+                                    }
+                                  }
+                                });
+                                    });
+                                },
+                                // Update map markers
+                                updateMarkers: function(records) {
+                                    var self = this;
+                                    $.each(self.markers, function() {
+                                        this.setMap(null);
+                                    })
+                                    $.each(records, function() {
+                                        self.markers[this.id].setMap(self.map);
+                                    });
+                                    //Set map center
+                                    if (records.length) self.setCenterPoint();
+                                },
+                                // Set centre point for map
+                                setCenterPoint: function() {
+                                    var lat = 0,
+                                        lng = 0;
+                                    count = 0;
+                                    //Calculate approximate center point based on number of JSON entries
+                                    for (id in this.markers) {
+                                        var m = this.markers[id];
+                                        if (m.map) {
+                                            lat += m.getPosition().lat();
+                                            lng += m.getPosition().lng();
+                                            count++;
+                                        }
+                                    }
+                                    if (count > 0) {
+                                        this.map.setCenter(new google.maps.LatLng(lat / count, lng / count));
+                                    }
+                                }
+                            };
+                            // CHANGE MAP FOCUS:
+                            function showCompany(lat, lng) {
+                                var position = new google.maps.LatLng(lat, lng);
+                                map.setCenter(position);
+                                alert(lat, lng);
+                            }
+                            </script>
+
+             
+                    
+
+
+
+                    <div class="form-group  align-items-center justify-content-center" style=" display: flex;  flex-direction: row; ">
+                        <div> Price is Rs.</div><div id = "priceid" class="priceid" ></div>   
+                        </div>
+
+                    <div class="form-group">  
+                        
+                        <div class="col-md-offset-2 col-md-10">    
+                            <input type="submit" value="Place the hire" class="btn btn-primary" />    
+                        </div>    
+                    </div>    
+                </div>    
+            }    
+
+</div>
+
+    
+}
+
+
+else if( pagestate == "waitforadriverselectREFRESHALWAYS")
+{
+    <header>
+        <meta http-equiv="refresh" content="5" />
+    </header>
+    <div class=" text-center" id="waitinhgpage"  >
+        <img src="/images/please-wait.gif" alt="waiting...">
+
+        
+        <div class="row">
+            <h2 style="text-align:center; ">Please wait untill a driver accepts .</h2>
+            <div class="col-md-4">
+            </div>
+            <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 60px;">    
+                        <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:20px" >
+                            <button class="btn btn-danger btn-large" type="button" onclick="location.href='@Url.Action("cancelpostedjob", "landpages"  )'"  >Or cancel the hire </button>
+                        </div>
+            </div>
+            </div>
+
+    
+    </div>
+        
+}
+
+
+else if( pagestate == "youareonhetrip"){
+     <header>
+        <meta http-equiv="refresh" content="5" />
+    </header>
+   
+     
+     <div class="col-md-12" style="text-align:center; padding-top: 30px;">    
+                <h2>Please wait a driver is on the way </h2>    
+            </div>      
+
+    <div class="column " id="waitinhgpage" style="display: flex;    justify-content: center;    align-items: center; "  >
+        <div  style = " display: flex;  flex-direction: column; ">
+            <img style="border-radius: 25px;" src="/images/cat-driving-serious.gif" alt="waiting...">
+        </div>
+        
+
+        
+        <div class="column">
+            <div class="row" >
+             
+            </div>
+            
+            
+            <div class="row  ">    
+                        <div  class="" style="flex-direction: column;;  margin: 10px; padding:20px" >
+                            <p  style="color:green; font-size:24px;">
+                                Driver name  : @driver.Name
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                Gender  : @driver.gender
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                Language  : @driver.race
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                phone no  : @driver.phoneNo
+                            </p>
+                        </div>
+            </div>
+            </div>
+
+    
+    </div>
+
+
+
+}
+
+else if ( pagestate == "pageforpayment")
+{
+    <div   id="divheightmin"   >
+    
+        
+
+
+
+          <div class="col-md-12">    
+                <h2>Select your payment method</h2>    
+            </div>   
+
+            <hr />
+
+
+
+            <div class="col-md-12" style = " display: flex;  flex-direction: row; ">    
+                <h4>Pay with cash </h4>    
+                <button class="btn btn-danger btn-sm align-items-right "  id="paywithcash" style="color:white;  align-content: flex-end ; margin-left:100px"   onclick="location.href='@Url.Action("paywithcard", "landpages"  )' "        >
+                                Press after cash payment - Rs @objectwithamounttopay.amountPayable
+                            </button>
+            </div>  
+
+            
+            
+            <hr />
+
+
+            <div class="col-md-12">    
+                <h4>Or pay with card </h4>    
+            </div>
+
+
+        <div class="wrapper">    
+            <div class="checkout container">        
+                <form id="payment-form" method="post" asp-controller="landpages" asp-action="cardpayclick">            
+                    @Html.HiddenFor(n => n.customerid)            
+                    <div class="card">                
+                        <div class="card-body">                                        
+                            <p class="card-text"><small class="text-muted">Price: @objectwithamounttopay.amountPayable</small></p>                
+                        </div>                
+                    </div>            
+                    <section>                
+                        <div class="bt-drop-in-wrapper">                    
+                            <div id="bt-dropin"></div>                
+                        </div>            
+                    </section>            
+                    @Html.HiddenFor(objectwithamounttopay => objectwithamounttopay.Nonce, new { @id = "nonce" }) 
+                    @Html.HiddenFor(objectwithamounttopay => objectwithamounttopay.amountPayable, new { @id = "PayableAmount" }) 
+                    @Html.HiddenFor(objectwithamounttopay => objectwithamounttopay.customerid, new { @id = "customerid" }) 
+                    <hr />            
+                    <button class="btn btn-success" type="submit">
+                    <span>Confirm payment - Rs @objectwithamounttopay.amountPayable</span>
+                    </button>        
+                </form>    
+            </div>
+        </div>
+
+        <script src="https://js.braintreegateway.com/web/dropin/1.22.0/js/dropin.min.js"></script>
+        
+        <script>    
+            var client_token = "@ViewBag.ClientToken";    
+            var form = document.querySelector('#payment-form');    
+    
+            braintree.dropin.create({ 
+                authorization: client_token,        
+                container: '#bt-dropin'    
+            }, function (createErr, instance) {   
+                form.addEventListener('submit', function (event) {            
+                    event.preventDefault();            
+                    instance.requestPaymentMethod(function (err, payload) {                
+                        if (err) {  
+                            return err;                
+                        }  
+                        document.querySelector('#nonce').value = payload.nonce; 
+                        document.querySelector('#PayableAmount').value = "@ViewBag.objectwithamounttopay.amountPayable" ; 
+                        document.querySelector('#customerid').value = "@ViewBag.objectwithamounttopay.customerid" ; 
+                        form.submit();
+                    }
+                );        
+            }
+        );
+        
+        }); 
+        </script> 
+
+
+
+    </div>
+    
+
+}
+
+else if( pagestate == "pageforratingdriver"){
+
+    <head>
+  
+
+  	<!-- default styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
+	<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+
+	<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme CSS files as mentioned below (and change the theme property of the plugin) -->
+	<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+
+	<!-- important mandatory libraries -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
+
+	<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme JS files as mentioned below (and change the theme property of the plugin) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+
+	<!-- optionally if you need translation for your language then include locale file as mentioned below (replace LANG.js with your own locale file) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
+</head>
+
+
+    <div   id="divheightmin"   >
+
+
+
+        
+
+	<script>
+		$(document).ready(function(){
+		    $('#input-3').rating({displayOnly: true, step: 0.5});
+		    $('#input-5').rating({clearCaption: 'No stars yet'});
+		    $('#input-8').rating({rtl: true, containerClass: 'is-star'});
+		    $('#input-9').rating();
+		});
+	</script>
+
+
+
+      
+      <div class="col-md-12">    
+                <h2>Rate your trip</h2>    
+            </div>        
+            @using (Html.BeginForm(    "addratingbycustomerr", "landpages", FormMethod.Post  ))     
+            {    
+                @Html.AntiForgeryToken()            
+                <div class="form-horizontal " >             
+                <hr />  
+                
+                    <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 50px;">    
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left ;" >
+                            @Html.LabelFor(model => model.feedbackRatefordriver, htmlAttributes: new { @class = "control-label col-md-2 classtoinline " })    
+                        </div>
+                        <div class="col-md-5" style="flex-direction: column; text-align:left; margin-top:15px" style="display:inline-block;">    
+                            
+                            @Html.EditorFor(model => model.feedbackRatefordriver, new { htmlAttributes = new { @class = "rating rating-loading" ,@id="input-2" , @name="input-2" , @datamin="0", @datamax="5", @datastep="0.1", @datasize="sm"     } }) 
+                            @Html.ValidationMessageFor(model => model.feedbackRatefordriver, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>    
+                    
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left;   " >
+                            @Html.LabelFor(model => model.feedbackfordriver, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-5" style="flex-direction: column; text-align:left ">    
+                            @Html.EditorFor(model => model.feedbackfordriver, new { htmlAttributes = new { @class = "" } })    
+                            @Html.ValidationMessageFor(model => model.feedbackfordriver, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>
+
+                    <div class="form-group">    
+                        <div class="col-md-offset-2 col-md-10">    
+                            <input type="submit" value="Rate the  trip" class="btn btn-primary " style="float:right;" />    
+                        </div>    
+                    </div>    
+                </div>    
+            }      
+    </div>
+
+    
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('divheightmin').style.minHeight=Height+"px" ;  
+</script>
+}
+
+else{
+    <div  >
+        fsdadasasdsdf
+    </div>
+}
+
+
+
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('waitinhgpage').style.minHeight=Height+"px" ;  
+</script>

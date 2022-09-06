@@ -1,0 +1,117 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    int AccBalance  = ViewBag.AccBalance ;
+}
+
+
+@* Views/Account/Profile.cshtml *@
+
+@model mvcweb.ViewModels.UserProfileViewModel
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="row">
+            <h2>@ViewData["Title"]</h2>
+
+            <div class="col-md-2">
+                <img src="@Model.ProfileImage"
+                     alt="" class="img-rounded img-responsive" />
+            </div>
+            <div class="col-md-4">
+                <h3>@Model.Name</h3>
+                <p>
+                    <i class="glyphicon glyphicon-envelope"></i> @Model.EmailAddress
+                </p>
+            </div>
+        </div>
+
+
+
+
+        <div>
+
+            
+        <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; ">    
+            <div class="col-md-3" style="flex-direction: column; text-align:left ;" >
+            
+            </div>
+
+
+            <div class="col-md-3" style="flex-direction: column; text-align:left ; display: inline;" >
+            
+                    @if (@Model.collectionofuserdeatail.userType == "driver")
+                    {
+                        <h3  style="color:blue; font-size:24px;">
+                            Account balance : @AccBalance 
+                        </h3>
+
+                    }
+
+                <div/>
+            <div class="col-md-3" style="flex-direction: column; text-align:left ; display: inline;" >
+                        <div  class="" style="flex-direction: column;  margin: 10px; padding:20px" >
+                            <p  style="color:green; font-size:24px;">
+                                Name  : @Model.collectionofuserdeatail.Name
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                phone no  : @Model.collectionofuserdeatail.phoneNo
+                            </p>
+
+                            <p  style="color:green; font-size:24px;">
+                                Gender  : @Model.collectionofuserdeatail.gender
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                Language  : @Model.collectionofuserdeatail.race
+                            </p>
+                            
+
+                            <p  style="color:green; font-size:24px;">
+                                Birthday  : @Model.collectionofuserdeatail.birthday
+                            </p>
+                            
+                            <p  style="color:green; font-size:24px;">
+                                Civil state  : @Model.collectionofuserdeatail.civilState
+                            </p>
+
+                            <p  style="color:green; font-size:24px;">
+                                User Type  : @Model.collectionofuserdeatail.userType
+                            </p>
+                            @if(@Model.collectionofuserdeatail.userType == "driver")
+                            {
+                                
+                                <p  style="color:green; font-size:24px;">
+                                Two wheel  : @Model.collectionofuserdeatail.twowheel
+                                </p>
+                                <p  style="color:green; font-size:24px;">
+                                    Three wheel  : @Model.collectionofuserdeatail.threewheel
+                                </p>
+                                <p  style="color:green; font-size:24px;">
+                                    Four wheel  : @Model.collectionofuserdeatail.fourwheel
+                                </p>
+                            }
+
+                            
+                        </div>
+            </div>
+
+
+
+
+            <div class="col-md-3" style="flex-direction: column; text-align:left ;" >            
+
+            </div>
+
+        </div>
+
+
+        </div>
+
+
+
+    </div>
+</div>

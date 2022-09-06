@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model mvcweb.Models.users;
+
+<div class="text-center"  id="divheightmin"  style="display: flex;    justify-content: center;    align-items: center;"  >
+    @if (User.Identity.IsAuthenticated)
+    {
+     
+
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+            <script type="text/javascript">
+                $(document).ready(function () {
+                var origin   = window.location.origin;
+                    $.ajax({
+                        type: "GET",
+
+                        url: origin + "/UsersController/ulevNemail",
+                        success: function (data, textStatus) {
+                            top.location.href = origin + "/UsersController/ulevNemail";
+                            
+                        },
+                        error: function (req, status, error) {
+                            console.log(msg);
+                        }
+                    }); 
+                });
+            </script>
+
+
+
+                     
+        
+
+
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to</h1>
+        <img src="images/acme-corp.png" alt="Bar rider">
+        <h3>Where you save lot of money.</h3>
+    }
+    
+
+</div>
+
+
+
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('divheightmin').style.minHeight=Height+"px" ;  
+</script>

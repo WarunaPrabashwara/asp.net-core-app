@@ -1,0 +1,107 @@
+﻿@using mvcweb.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<users> driverlist = ViewBag.driverlist;
+    List<int> Accountbalance = ViewBag.Accountbalance;
+    int loopi = 0;
+}
+
+
+
+<div id="waitinhgpage"   >
+    
+    @if(driverlist.Count == 0)
+            {
+                <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:10px"  >
+                                <p>  No drivers available yet </p>                                
+
+                     </div>
+                
+            }
+            else
+            {
+                 <div class="form-group  align-items-center justify-content-center " style = " display: grid;  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); ">   
+                 
+                 @foreach (var person in driverlist )
+                { 
+                
+                    <div class="card" style="width: 22rem; margin:20 ;">
+                        <div class="card-body">
+                             
+                            <p class="card-text" style="color:green;">
+                                Customer email : @person.uniqueId
+                            </p>
+
+                            <p class="card-text" style="color:green;">
+                                Name : @person.Name
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Birthday : @person.birthday
+                            </p> 
+                            <p class="card-text" style="color:green;">
+                                Gender : @person.gender
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Language : @person.race
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Civil status : @person.civilState
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Phone no : @person.phoneNo
+                            </p>
+
+                             <p class="card-text" style="color:green;">
+                                Two wheel : @person.twowheel
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Three wheel : @person.threewheel
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Four wheel : @person.fourwheel
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Is approved : @person.isapproved
+                            </p>
+
+                            <p class="card-text" style="color:blue;">
+                                Account balance : @Accountbalance[loopi]
+                            </p>
+
+
+                                                     
+
+                        </div>
+                        <div class="card-footer text-center">
+                             <button class="btn btn-primary btn-sm float-left" id="accept" style="color:white"  onclick="location.href='@Url.Action("paythedriverfee", "adminbutonpages" , new {  driverid = person.uniqueId })' "      >
+                                Do the payment and click
+                            </button>
+
+                        </div>
+                    </div>
+                    loopi++;
+                }
+
+
+
+                 
+
+             </div>
+       
+
+            }
+            
+
+
+</div>
+
+
+
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('waitinhgpage').style.minHeight=Height+"px" ;  
+</script>

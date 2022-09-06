@@ -1,0 +1,474 @@
+﻿@using mvcweb.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    int counter = 0;
+    string pagestate  = ViewBag.situation ;
+    List<jobstatus> resultobject = ViewBag.resultobject;
+    users customer = ViewBag.customer;
+    List<jobstatus> joblist = ViewBag.joblist;
+    List<users> customerlistofjobs = ViewBag.customerlistofjobs;
+    var paidmethod = ViewBag.paidmethod;
+    var amount = ViewBag.amount;
+    string graphqlalow = ViewBag.graphqlalow;
+    string startingplace ="";
+    string endinplace ="";
+    string driverid =  ViewBag.driverid ;
+}
+
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places&key=AIzaSyDlJZBW-azAXP0T5Sp0OoUkTA4KrPcT0RI">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js">
+    </script>
+    <script src="https://raw.githubusercontent.com/jiren/filter.js/master/src/filter.js" type="text/javascript">
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default">
+    </script>
+    <title></title>
+    </head>
+
+
+@if( pagestate == "ratingpage")
+{
+
+
+     <head>
+   
+  	<!-- default styles -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css">
+	<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+
+	<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme CSS files as mentioned below (and change the theme property of the plugin) -->
+	<link href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.css" media="all" rel="stylesheet" type="text/css" />
+
+	<!-- important mandatory libraries -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js" type="text/javascript"></script>
+
+	<!-- with v4.1.0 Krajee SVG theme is used as default (and must be loaded as below) - include any of the other theme JS files as mentioned below (and change the theme property of the plugin) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-svg/theme.js"></script>
+
+	<!-- optionally if you need translation for your language then include locale file as mentioned below (replace LANG.js with your own locale file) -->
+	<script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
+    </head>
+
+
+     
+    <div class=" text-center" id="divheightmin"  >
+
+        <script>
+        $(document).ready(function(){
+            $('#input-3').rating({displayOnly: true, step: 0.5});
+            $('#input-5').rating({clearCaption: 'No stars yet'});
+            $('#input-8').rating({rtl: true, containerClass: 'is-star'});
+            $('#input-9').rating();
+        });
+    </script>
+
+        <div class="col-md-12">    
+                <h2>Rate your trip</h2>    
+            </div>    
+
+
+            <div class="col-md-12">    
+            </div>
+            <hr />
+
+        @if( resultobject[0].paywith  == "cash" )
+        {
+            <div class="col-md-12">    
+                <h4>Rs. @resultobject[0].amountPayable was paid with cash </h4>    
+            </div>
+        }
+        else if( resultobject[0].paywith == null )
+        {
+            <div class="col-md-12">    
+                <h4> payment was not done yet . Refresh the page when the customer did the payment . </h4>    
+            </div>
+        }
+        else 
+        {
+            <div class="col-md-12">    
+                <h4> Rs. @resultobject[0].amountPayable was paid with card . See your account to check the account balance </h4>    
+            </div>              
+        }
+
+           <hr /> 
+        <div class="col-md-12">    </div>
+
+
+        @model jobstatus
+        <form asp-controller="landpages" asp-action="addratingbydriver" method="post">
+            <div class="row">
+                <div class="col-lg-4">Feedback rate for customer</div>
+                <div class="col-lg-8">
+
+                    @Html.EditorFor(model => model.feedbackrateforcustomer, new { htmlAttributes = new { @class = "rating rating-loading" ,@id="input-2" , @name="input-2" , @datamin="0", @datamax="5", @datastep="0.1", @datasize="sm"     } }) 
+
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-lg-4">Feedback for customer </div>
+                <div class="col-lg-8">
+                    <input asp-for="feedbackforcustomer" placeholder="Enter feedback for customer " autocomplete="off" class="form-control" />
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-lg-offset-4 col-lg-8">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+        </form>
+
+        
+
+
+    </div>
+   
+
+
+}
+
+else if( pagestate == "joblistekapenwannameeke")
+{
+    <header>
+        <meta http-equiv="refresh" content="30" />
+    </header>
+
+    @Html.Hidden("myVar", "" );
+    @if( graphqlalow == "yes")
+    {
+        <script>
+            console.log("inthesystem");
+            fetch("http://localhost:5000/graphql", {
+                  "method": "POST",
+                  "headers": {"Content-type": "application/json; charset=UTF-8" , "Access-Control-Allow-Origin":"*" },
+                  
+                  "body": JSON.stringify({
+                    query: `{
+                      allJobs(driverid : @driverid ) {
+                        customerid
+                        driverid
+                        customerFrom
+                        customerTo
+                        isJobdone
+                        amountPayable
+                        vehicleType
+                        feedbackRatefordriver
+                        feedbackrateforcustomer
+                        feedbackforcustomer
+                        feedbackfordriver
+                        dateTime
+                        paywith
+                      }
+                    }`
+                  })
+                }).then(res => res.json()).then((data) => {  $('#myVar').val(data.data)   }).catch((err) => console.log(err)) 
+
+            </script>
+
+        
+    }
+
+
+    <div class=" text-center" id="divheightmin"  >
+        @if(joblist.Count == 0 )
+        {
+            <div class="col-md-12">    
+                <h4>No jobs posted yet </h4>    
+            </div>    
+        }
+        else
+        {
+            <div class="col-md-12">    
+                <h2>Select a trip that you like</h2>    
+            </div>    
+             <div class="form-group  align-items-center justify-content-center " style = " display: grid;  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); ">   
+                 @foreach (var job in joblist)
+                {
+               
+                    <div class="card" style="width: 22rem; margin:20 ;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color:green">
+                                @job.vehicleType
+                            </h5>
+                            <div class="map" id="map" style="width:100%;height:150px; margin:10px;"></div> 
+                           
+                            <p class="card-text" style="color:green;">
+                                Amount : @job.amountPayable
+                            </p>
+
+                            <p class="card-text" style="color:green;">
+                                Customer Name : @customerlistofjobs[counter].Name
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Customer Phone no: @customerlistofjobs[counter].phoneNo
+                            </p>
+
+                            <p class="card-text" style="color:green;">
+                                Customer Gender : @customerlistofjobs[counter].gender
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Customer Birthday : @customerlistofjobs[counter].birthday
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Customer Civil state : @customerlistofjobs[counter].civilState
+                            </p>
+                        </div>
+                        <div class="card-footer text-center">
+                            <button class="btn btn-primary btn-sm float-left" id="accept" style="color:white"  onclick="location.href='@Url.Action("selectthejob", "landpages" , new {  customerid = job.customerid  })' "      >
+                                Select
+                            </button>
+                            
+                        </div>
+                    </div>
+
+                    <div id="customerFrom" style="visibility:hidden;">@job.customerFrom</div>
+                    <div id="customerTo" style="visibility:hidden;">@job.customerTo</div>
+                   
+
+
+                    <script>
+
+                        var fromplace = document.getElementById("customerFrom").innerHTML  ;
+                        var toplace = document.getElementById("customerTo").innerHTML  ;
+                        console.log( fromplace.split(","));
+                        console.log( toplace.split(","));
+
+
+
+
+                            $(document).ready(function() {
+                                success();
+                                function success(){
+	                               var places = [ {
+                                    "id": 1,
+                                    "name": "Ending place",
+                                    "coordinate": {
+                                        "latitude":  toplace.split(",")[0] ,
+                                        "longitude": toplace.split(",")[1]  
+                                    },
+                                    "description": "Ending place",
+                                    "is_active": true
+                                },{
+                                    "id": 2,
+                                    "name": "Starting place",
+                                    "coordinate": {
+                                        "latitude": fromplace.split(",")[0] ,
+                                        "longitude": fromplace.split(",")[1]  
+                                    },
+                                    "description": "Starting place",
+                                    "is_active": true
+                                }]
+                                // EXECUTE FUNCTIONS:
+                                var place = places[0];
+                                GoogleMap.init(place.coordinate.latitude, place.coordinate.longitude, places);
+                                var afterFilter = function(result) {
+                                    $('#total_places').text(result.length);
+                                    GoogleMap.updateMarkers(result);
+                                }
+                                }
+
+                            });
+                            // BUILD FILTERS:
+                            // BUILD GOOGLE MAPS:
+                            var GoogleMap = {
+                                map: null,
+                                markers: {},
+                                init: function(lat, lng, places) {
+                                    var self = this;
+                                    var mapOptions = {
+                                        zoom: 12,
+                                        center: new google.maps.LatLng(lat, lng)
+                                    };
+                                    this.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                                    this.infowindow = new google.maps.InfoWindow({
+                                        size: new google.maps.Size(50, 50)
+                                    });
+                                                                        
+                                    $.each(places, function() {
+                                        self.addMarker(this);
+                                    });
+                                    this.setCenterPoint();
+                                },
+                                // Create map markers
+                                addMarker: function(place) {
+                                    var self = this;
+                                    var marker = new google.maps.Marker({
+                                        position: new google.maps.LatLng(place.coordinate.latitude, place.coordinate.longitude),
+                                        map: self.map,
+                                        title: place.name,
+                                        icon: place.image
+                                    });
+                                    console.log(place);
+                                    // Create information event for each marker
+                                    marker.info_window_content = 'TEST'
+                                    self.markers[place.id] = marker
+                                    google.maps.event.addListener(marker, 'dragend' , function() {
+                                        self.map.setCenter(marker.getPosition());
+	                                console.log("heehee");
+	                                console.log(marker.getPosition().lat()  );
+                           
+                                    });
+                                },
+                                // Update map markers
+                                updateMarkers: function(records) {
+                                    var self = this;
+                                    $.each(self.markers, function() {
+                                        this.setMap(null);
+                                    })
+                                    $.each(records, function() {
+                                        self.markers[this.id].setMap(self.map);
+                                    });
+                                    //Set map center
+                                    if (records.length) self.setCenterPoint();
+                                },
+                                // Set centre point for map
+                                setCenterPoint: function() {
+                                    var lat = 0,
+                                        lng = 0;
+                                    count = 0;
+                                    //Calculate approximate center point based on number of JSON entries
+                                    for (id in this.markers) {
+                                        var m = this.markers[id];
+                                        if (m.map) {
+                                            lat += m.getPosition().lat();
+                                            lng += m.getPosition().lng();
+                                            count++;
+                                        }
+                                    }
+                                    if (count > 0) {
+                                        this.map.setCenter(new google.maps.LatLng(lat / count, lng / count));
+                                    }
+                                }
+                            };
+                            // CHANGE MAP FOCUS:
+                            function showCompany(lat, lng) {
+                                var position = new google.maps.LatLng(lat, lng);
+                                map.setCenter(position);
+                                alert(lat, lng);
+                            }
+                            
+             
+
+                    </script>
+
+
+
+
+                counter++ ;
+            }
+             </div>
+        }
+    </div>
+}
+
+
+else if( pagestate == "youareonatrip")
+{
+    <div class=" text-center" id="divheightmin"  >
+        
+        <div class="col-md-12">    
+                <h2>you are on trip </h2>    
+            </div>    
+             <hr /> 
+
+
+             <div class="align-items-center justify-content-center " style = " display: flex;  flex-direction: column; ">
+                <img style="border-radius: 25px; height:90px; width:76px " src="/images/car-back-seat.gif" alt="waiting...">
+            </div>
+
+             <div class="row  ">    
+                        <div  class="" style="flex-direction: column;;  margin: 10px; padding:20px" >
+                            <p  style="color:green; font-size:24px;">
+                                Customer name  : @customer.Name
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                Gender  : @customer.phoneNo
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                Language  : @customer.race
+                            </p>
+                            <p  style="color:green; font-size:24px;">
+                                phone no  : @customer.phoneNo
+                            </p>
+                            
+                        </div>
+            </div>
+
+                        
+            <button class="btn btn-primary btn-sm float-left" id="confirmClickActionElementId" style="color:white"  href="@Url.Action("jobdonebutton", "landpages" , new {  isJobdone = "yes" }   )"      >
+                                Click when you finish the job 
+            </button>
+            <script>
+                document
+                .getElementById("confirmClickActionElementId")
+                .addEventListener("click", function( e ){ //e => event
+                    if( ! confirm("Do you really want to do this?") ){
+                        e.preventDefault(); // ! => don't want to do this
+                    } else {
+                        //want to do this! => maybe do something about it?
+                        
+
+                        $.ajax({
+                         type: "POST",
+                         url: '@Url.Action("jobdonebutton","landpages")',
+                         data: "{isJobdone:'yes'}",
+                         contentType: "application/json; charset=utf-8",
+                         dataType: "html",
+                         success: function (data) {
+                             location.reload();
+                         }
+                        })
+
+
+                    }
+                });
+            </script>
+
+
+        
+    </div>
+    
+}
+else{
+    <div class=" text-center" id="divheightmin"  >
+        it is not possible to see this page 
+    </div>
+
+
+}
+
+
+    
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('divheightmin').style.minHeight=Height+"px" ;  
+</script>
+ 
+
+
+
+
+
+
+
+
+
+
+

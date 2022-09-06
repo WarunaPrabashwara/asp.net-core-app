@@ -1,0 +1,178 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+@model mvcweb.Models.users;
+
+<style type="text/css">
+        .classtoinline {
+            white-space: nowrap;
+        }
+        .visibilityclas{
+            visibility: hidden;
+           
+        }
+    </style>
+
+    
+
+<div class="text-center">
+
+     <div class="col-md-12">    
+                <h2>Enter your Detail</h2>    
+            </div>        
+            @using (Html.BeginForm(    "Insert", "UsersController", FormMethod.Post  ))     
+            {    
+                @Html.AntiForgeryToken()            
+                <div class="form-horizontal " >             
+                <hr />  
+                
+                    
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; margin-top: 25px; height: 50px; ">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left " >
+                            @Html.LabelFor(model => model.userType, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column;  text-align: left; ">    
+                            @Html.RadioButtonFor(model => model.userType,  "customer", new {  @class = "form-check-input"  ,  @checked="true"   ,id = "gender" ,name= "gender" , @onchange="handleChange(this);"})  
+                            Customer    &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.userType,  "driver", new { @class = "form-check-input"  ,  id = "gender" ,name= "gender" , @onchange="handleChange(this);"}) 
+                            Driver
+                            @Html.ValidationMessageFor(model => model.userType, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>
+
+                    <script>
+                    function handleChange(src) {
+                      if (src.value == 'driver') {
+                                $("#idtohide").removeClass("visibilityclas");
+                                $("#isapproved").val("notapproved");
+                            } else {
+                                $("#idtohide").addClass("visibilityclas");
+                                $("#isapproved").val("approved");
+                            }
+                      }
+                      </script>
+
+                    <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 50px;">    
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left ;" >
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2 classtoinline " })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column; text-align:left" >    
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "" } })    
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>    
+                    
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left;   " >
+                            @Html.LabelFor(model => model.phoneNo, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column; text-align:left ">    
+                            @Html.EditorFor(model => model.phoneNo, new { htmlAttributes = new { @class = "" } })    
+                            @Html.ValidationMessageFor(model => model.phoneNo, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>
+
+
+                    <div class="form-group  align-items-center justify-content-center"  style = " display: flex;  flex-direction: row; height: 50px;">         
+                        <div  class="col-md-3" style="flex-direction: column;  text-align:left ; " >
+                            @Html.LabelFor(model => model.birthday, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column; text-align:left" >    
+                            @Html.EditorFor(model => model.birthday, new { htmlAttributes = new { type = "date" , @class = "" } })    
+                            @Html.ValidationMessageFor(model => model.birthday, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>        
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">         
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left ;" >
+                            @Html.LabelFor(model => model.gender, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-3" style="flex-direction: column; text-align:left  ">    
+                            @Html.RadioButtonFor(model => model.gender,  "male", new {   @class = "form-check-input"  , @checked="true"   ,id = "maleffemale" ,name= "maleffemale" })  
+                            Male    &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.gender,  "female", new { @class = "form-check-input"  ,  id = "maleffemale" ,name= "maleffemale" }) 
+                            Female
+                            @Html.ValidationMessageFor(model => model.gender, "", new { @class = "text-danger" })    
+                        </div>
+                                                                             
+                    </div>        
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left ;" >
+                            @Html.LabelFor(model => model.race, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        
+                        <div class="col-md-3" style="flex-direction: column; text-align:left  ">    
+                            @Html.RadioButtonFor(model => model.race,  "sinhala", new {  @class = "form-check-input"  ,  @checked="true"   ,id = "race" ,name= "race" })  
+                            Sinhala    &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.race,  "English", new {  @class = "form-check-input"  , id = "race" ,name= "race" }) 
+                            English   &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.race,  "Tamil", new { @class = "form-check-input"  ,  id = "race" ,name= "race" }) 
+                            Tamil   &nbsp; &nbsp;
+                            @Html.ValidationMessageFor(model => model.userType, "", new { @class = "text-danger" })    
+                        </div>
+                                                                            
+                    </div>                    
+                                       
+                    <div class="form-group  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;">        
+                        <div  class="col-md-3" style="flex-direction: column; text-align:left" >
+                            @Html.LabelFor(model => model.civilState, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+
+
+
+
+                        <div class="col-md-3" style="flex-direction: column; text-align:left  ">    
+                            @Html.RadioButtonFor(model => model.civilState,  "Single", new {   @class = "form-check-input"  , @checked="true"   ,id = "civilState" ,name= "civilState" })  
+                            Single    &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.civilState,  "Married", new { @class = "form-check-input"  ,  id = "civilState" ,name= "civilState" }) 
+                            Married   &nbsp; &nbsp;
+                            @Html.RadioButtonFor(model => model.civilState,  "Devorced", new { @class = "form-check-input"  ,  id = "civilState" ,name= "civilState" }) 
+                            Devorced   &nbsp; &nbsp;
+                            @Html.ValidationMessageFor(model => model.userType, "", new { @class = "text-danger" })    
+                        </div>
+
+
+
+                            
+                    </div>
+                    
+                        
+                    <div class="form-group visibilityclas  align-items-center justify-content-center" style = " display: flex;  flex-direction: row; height: 50px;" id="idtohide">        
+                        <div  class="col-md-4" style="flex-direction: column; text-align:left " >
+                            @Html.LabelFor(model => model.managablevehicles, htmlAttributes: new { @class = "control-label col-md-2 classtoinline" })    
+                        </div>
+                        <div class="col-md-4 " style="flex-direction: column; text-align:left "> 
+
+                            @Html.CheckBoxFor(model => model.twowheel, false )    
+                            Two wheels &nbsp; &nbsp;
+                            @Html.CheckBoxFor(model => model.threewheel, false )    
+                            Threewheels &nbsp; &nbsp;
+                            @Html.CheckBoxFor(model => model.fourwheel, false )    
+                            Four wheels &nbsp; &nbsp;
+                            @Html.ValidationMessageFor(model => model.managablevehicles, "", new { @class = "text-danger" })    
+                        </div>    
+                    </div>
+
+                    <div class="form-group   " style =  "visibility: hidden;" id="idtoaccept">        
+                        <div class="col-md-4 " style="flex-direction: column; text-align:left ">     
+                            @Html.EditorFor(model => model.isapproved,  new {  @class = ""  ,  @id = "isapproved" ,@name= "isapproved"  })
+                        </div>    
+                    </div>
+
+
+                    <div class="form-group">    
+                        <div class="col-md-offset-2 col-md-10">    
+                            <input type="submit" value="Register" class="btn btn-primary" />    
+                        </div>    
+                    </div>    
+                </div>    
+            }    
+
+
+</div>
+

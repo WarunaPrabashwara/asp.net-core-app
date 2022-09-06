@@ -1,0 +1,128 @@
+﻿@using mvcweb.Models
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    List<users> driverlist = ViewBag.collectionlist;
+    string drivevehicles = "";
+   string delete = "delete";
+    string approved = "approved";
+}
+
+@{
+    ViewData["Title"] = "Admin Home";
+}
+<div id="waitinhgpage"   >
+<div class="row"   >
+    <div class="col-md-12">
+        <div class="row">
+            <h2 style="text-align:center; ">@ViewData["Title"]</h2>
+
+            
+            <div class="col-md-4">
+                 
+            </div>
+
+            <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 60px;">    
+                        <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:10px" >
+                            <button class="btn btn-primary btn-large" type="button"  onclick="location.href='@Url.Action("viewCustomers", "adminbutonpages"  )'"  >View Customers</button>
+                        </div>
+                        <div  class="" style="flex-direction: column; text-align:left ; margin: 10px; padding:10px" >
+                            <button class="btn btn-primary btn-large" type="button" onclick="location.href='@Url.Action("viewdrivers", "adminbutonpages"  )'"  >View Drivers</button>
+                        </div>
+                        <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:10px"  >
+                            <button class="btn btn-primary btn-large" type="button" onclick="location.href='@Url.Action("Viewtrips", "adminbutonpages"  )'" >View Trips</button>
+                        </div>
+            </div>
+            <div class="form-group  align-items-center justify-content-center " style = " display: flex;  flex-direction: row; height: 100px;">   
+                    <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:10px"  >
+                                <h3>  <u>See Unaccepted Divers </u> </h3>                                
+
+                     </div>
+            </div>
+
+        
+            @if(driverlist.Count == 0)
+            {
+                <div  class="" style="flex-direction: column; text-align:left ;  margin: 10px; padding:10px"  >
+                                <p>  No unaccepted drivers available yet </p>                                
+
+                     </div>
+                
+            }
+            else
+            {
+                 <div class="form-group  align-items-center justify-content-center " style = " display: grid;  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); ">   
+                 
+                 @foreach (var person in driverlist)
+                { drivevehicles = " ";
+                
+                    <div class="card" style="width: 22rem; margin:20 ;">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color:green">
+                                @person.Name
+                            </h5>
+                            <p class="card-text" style="color:green;">
+                                Email : @person.uniqueId
+                            </p>
+
+                            <p class="card-text" style="color:green;">
+                                Phone no : @person.phoneNo
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Race : @person.race
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Gender : @person.gender
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Birthday : @person.birthday
+                            </p>
+                            <p class="card-text" style="color:green;">
+                                Civil state : @person.civilState
+                            </p>
+                            
+                            @if (person.twowheel == true) { drivevehicles = drivevehicles + "Two wheelers   "; }
+                            @if(person.threewheel ==true ) { drivevehicles = drivevehicles + "Three wheelers   "; } 
+                            @if(person.fourwheel==true ){ drivevehicles = drivevehicles + "Four wheelers   ";  }
+                            <p class="card-text" style="color:green;">
+                                Driving vehicles : @drivevehicles
+                            </p>
+                            
+
+                        </div>
+                        <div class="card-footer text-center">
+                            <button class="btn btn-primary btn-sm float-left" id="accept" style="color:white"  onclick="location.href='@Url.Action("approval", "landpages" , new {  uniqueId = person.uniqueId , status = approved })' "      >
+                                Accept
+                            </button>
+                            <button class="btn btn-danger btn-sm float-right"  id="reject" style="color:white"   onclick="location.href='@Url.Action("approval", "landpages" , new {  uniqueId = person.uniqueId , status = delete })' "        >
+                                Reject
+                            </button>
+                        </div>
+                    </div>
+                }
+
+
+
+                 
+
+             </div>
+       
+
+            }
+            
+        
+        </div>
+                  
+
+    </div>
+</div>
+</div>
+
+
+<script>
+        var Height = window.innerHeight ;
+        Height = Height-200 ;
+        
+        document.getElementById('waitinhgpage').style.minHeight=Height+"px" ;  
+</script>

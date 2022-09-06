@@ -1,0 +1,66 @@
+mehemai 
+
+meke api release kiyala saha debug kiyala folder dekak tyenwa ne 
+ bin kiyana folder eka athule
+
+eke tyewna exe file ekak 
+eka double click kalaama ape site eka live yanwa ., 
+kohetawath deploy danna oni naha 
+but ee ena site eke styling ehema wada karanne naha 
+ekai aula 
+
+
+
+
+
+///////
+
+so deploying balamu ilagata 
+
+
+https://www.youtube.com/watch?v=VKTZWZI1AhE&t=603s
+video eka hodai 
+
+
+-----
+
+deployement eka kalaamath enne ara kalin api ta bin eke release wala thibba wagema file set ekak . 
+meketh exe ekak enwa 
+wisheshathwaya thama ee exe eka double click karala ena cmd eke enwana ip ekata giyaama siyalu styling ekka lassanata site eka wada karanwa . aaya iis server oni naha . 
+
+
+
+
+---
+
+deployment eka karaddi 
+
+web deploy eka thama udin kalee 
+eeke thama ara exe ekkuth tyenwa kiyala mama dakke 
+
+
+dan web deploy package kiyala tyena eka karanna yanne 
+eeke tyewna ne package location eka 
+ekata mama dunne destination eka 
+source eka newe 
+iilagata web site name eka ahanwa 
+ekata mama aluthma site name ekak dunna balanna 
+
+testing.gg
+kiyala 
+uda dila naha ekakata wath 
+mama hithanne mee package deploy ekata iis eka lokuwata adaal naha 
+
+[	deken mona widihata kalath exe eka up karala local host ekata reverse proxy ekakin set karagatthama ithin iis oni naha mn hithanne ]
+
+
+
+package deploy eka hithapu tharam lesi naha 
+anyway eke apita oninm balanna kiyala tyenwa instruction file ekkuth 
+kohoma unath eeketh zip eka unzip karala gatthama athulata athulata yaddi ara wagema exe file ekak tyenwa
+eeka run kalaama site eka up wenwa 
+
+
+
+
+

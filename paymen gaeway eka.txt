@@ -1,0 +1,164 @@
+https://www.braintreepayments.com/sandbox
+
+gamini ananda
+gamini (pvt) ltd
+houseofadults@gmail.com
+
+
+
+
+
+
+
+
+blog eke interface ekak hadanna kiyanwa 
+interface hadanna danne nattham google search it [ apita  kiyanne aluth folder ekak hadala eeka athule interface eka hadanna kiyala . new class ekak hadanna giyaama eekema option eka tyenwa oninam interface eka hadanna ]
+
+https://www.youtube.com/watch?v=IPjUzpxVlRs
+uda video eke interfaces hadanna thyenwa 
+
+
+hari iilagata apu prashne thama 
+services.AddTransient<IBraintreeService, BraintreeService>();
+kiana eka startup.cs kiyala file ekakata daaanna llu 
+but ehema file ekak naha ne .
+
+eeka ta solution hewwa
+ehema file ekak additionally add karanna 
+
+https://www.youtube.com/watch?v=cuOKV_0b-JI
+video eka kiyala denwa eeka 
+
+
+
+
+services.AddTransient<IBraintreeService, BraintreeService>();
+
+kiyala add karanna kiyala thibbata 
+
+eka add kale mehema
+
+builder.services.AddTransient<IBraintreeService, BraintreeService>();
+
+
+aparaade video eka balaagena program.cs eken startup.cs ekak haduwe 
+oninam arakatama daanna thibba 
+
+startup.cs eke
+
+
+
+
+
+private static void ConfigureServices(WebApplicationBuilder builder)
+        {
+            builder.Services.AddAuth0WebAppAuthentication(options => {
+                options.Domain = builder.Configuration["Auth0:Domain"];
+                options.ClientId = builder.Configuration["Auth0:ClientId"];
+                options.Scope = "openid profile email";
+            });
+
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddTransient<IBraintreeService, BraintreeService>();
+        }
+
+
+kiyana function ekata thama ape service eka add kale antimata . 
+balapan  , add kala eka peeenna thyenwa 
+
+
+
+ookata noda program.cs ekatath danna pluwan
+by the way 
+
+
+
+
+blog eke tyena java sceript kaalle antimata 
+
+});
+        </script> 
+
+kiala kaallak dala naha 
+eeka dapan . adu paduwak eeka
+
+ita amatharawa thawa adu paadu godak tyewna \
+ee nisa pahala script eka use karana
+
+ethkota js kaalla enne mehemai 
+
+
+
+<script>    
+            var client_token = "@ViewBag.ClientToken";    
+            var form = document.querySelector('#payment-form');    
+    
+            braintree.dropin.create({ 
+                authorization: client_token,        
+                container: '#bt-dropin'    
+            }, function (createErr, instance) {   
+                form.addEventListener('submit', function (event) {            
+                    event.preventDefault();            
+                    instance.requestPaymentMethod(function (err, payload) {                
+                        if (err) {  
+                            return err;                
+                        }  
+                        document.querySelector('#nonce').value = payload.nonce;                
+                        form.submit();
+                    }
+                );        
+            }
+        );
+        
+        }); 
+        </script> 
+
+
+
+
+sand box wala check karanna car number oninm test cards me link eke tyenwa 
+
+https://support.checkfront.com/hc/en-us/articles/115004847353-Payment-Providers-Braintree-Direct
+
+[test kaaddi adaala payment gateway ekata adaala test card walin witharak test karanna 
+wena wena ewagen  test karanna epa]
+
+
+
+controller eke enne error ekak paymetn eka kalaama
+
+ee ai kiyala balamu dan 
+
+[ https://www.c-sharpcorner.com/article/braintree-payment-asp-net-core-2-1/  		site eketh samepayment gateway integration eka tyenwa oninm . wenas widihakata ]
+
+
+
+[ extra 
+A payment method nonce is a secure, one-time-use reference to payment information. It's the key element that allows your server to communicate sensitive payment information to Braintree without ever touching the raw data.
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
